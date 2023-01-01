@@ -26,18 +26,26 @@ exports.getJobList = (request, response) => {
         "Content-Type": "application/json",
       },
     };
-    const body = [];
+    let body = "";
     const req = http.request(options, (res) => {
       res.setEncoding("utf8");
       res.on("data", (chunk) => {
-        body.push(chunk);
+        body += chunk;
       });
       res.on("end", () => {
-        response.status(200).send({
-          returnValue: 200,
-          message: "Success",
-          object: JSON.parse(body),
-        });
+        try {
+          let json = JSON.parse(body);
+          if(json.status === 500) {
+            json = []
+          } 
+          response.status(200).send({
+            returnValue: 200,
+            message: "Success",
+            object: json,
+          });
+        } catch (error) {
+          console.error(error.message);
+        }
       });
     });
     req.on("error", (error) => {
@@ -62,18 +70,22 @@ exports.getDetailJob = (request, response) => {
         "Content-Type": "application/json",
       },
     };
-    const body = [];
+    let body = "";
     const req = http.request(options, (res) => {
       res.setEncoding("utf8");
       res.on("data", (chunk) => {
-        body.push(chunk);
+        body += chunk;
       });
       res.on("end", () => {
-        response.status(200).send({
-          returnValue: 200,
-          message: "Success",
-          object: JSON.parse(body),
-        });
+        try {
+          response.status(200).send({
+            returnValue: 200,
+            message: "Success",
+            object: JSON.parse(body),
+          });
+        } catch (error) {
+          console.error(error.message);
+        }
       });
     });
     req.on("error", (error) => {
